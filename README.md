@@ -1,117 +1,198 @@
 # Apex-CLI
 
-The APEX CLI library is the nodejs CLI tools enable manage various configuration settings.
+**Apex-CLI** is a Node.js-based command-line tool that helps manage configuration settings for application development and deployment workflows, especially for containerized environments.
 
-In order to use the CLI, you should have minimum nodejs v16 to install
+---
 
-you can run the following command to verify the installation
+## 🚀 Requirements
+
+- **Node.js v16 or higher**  
+  Check your Node.js version:
+  ```bash
+  node -v
+  ```
+
+---
+
+## 📦 Installation
+
+### Option 1: Install directly from release
+
+```bash
+npm install -g https://github.com/CLML-APEX/apex-cli/releases/download/main-Latest/apex-cli.tar.gz
 ```
-node -v
-```
 
-To install the CLI tools 
-```Bash Scripts
-npm install -g https://github.com/CLML-APEX/apex-cli/releases/download/main/apex-cli.tar.gz
-```
+### Option 2: Manual download
 
-alternative you can download the repo from [here](https://github.com/CLML-APEX/apex-cli/releases)
+1. Download the latest `.tar.gz` release from [GitHub Releases](https://github.com/CLML-APEX/apex-cli/releases).
+2. Install it manually:
+   ```bash
+   npm install -g ./apex-cli.tar.gz
+   ```
 
-after downloading, you can run the following command to install the CLI (assuming the downloaded file is aplex-cli.tar.gz)
+> ℹ️ **Note:** Installed CLI scripts are placed in your global Node.js root. You can find the location by running:
+> ```bash
+> npm -g root
+> ```
 
-```
-npm i -g ./apex-cli.tar.gz
-```
+---
 
-* the scripts will be install in nodejs root folder
-you can run <npm -g root> to know the folder
+## ✅ Verify Installation
 
-after installation, you can run the following to verify the installation
-```
+After installation, run:
+```bash
 npm exec apex-help
 ```
 
-The command will list down all relevant commands in Apex-Cli.
+This will list all available CLI commands.
 
-### Command line
 ---
-1) `apex-help` List down available command
-2) `apex-clean` remove all compiled codes
-3) `apex` manage the scope of project
-4) `apex-config` change parameters of the configuration
-5) `apex-prepare` generate all settings file
-6) `apex-docker` generate all docker build file and compose file
 
-### Work flow
+## 🛠️ Available Commands
+
+| Command         | Description                                                   |
+|------------------|---------------------------------------------------------------|
+| `apex-help`       | Show all available commands                                   |
+| `apex-clean`      | Clean up all compiled code                                   |
+| `apex`            | Manage and switch project scopes                             |
+| `apex-config`     | Update configuration parameters                              |
+| `apex-prepare`    | Generate all necessary configuration and setting files       |
+| `apex-docker`     | Generate Dockerfile and `docker-compose.yml` for the project |
+
 ---
-1) First need to create the environment indicate the root of the solution. 
-```
-npm exec apex -- -folder <root of the project> project
-```
-The command will create the scope (identifier = project) with project root folder. subsequent actions will be operating on all the sub-folders in the project root folder
 
-> [!WARNING]
-CLI will not check if there is existing configuration, system will immediately overwrite the configuration once the command is executed.
+## 🔁 Workflow Guide
 
-2) Develop can run the following to confirm the environment ()
+### 1. Create a Project Scope
+
+Define a new environment scope to manage the root of your solution:
+
+```bash
+npm exec apex -- -folder <project_root_path> <project_name>
 ```
+
+> ⚠️ This will **overwrite existing configuration** without confirmation.
+
+---
+
+### 2. List Existing Scopes
+
+You can view existing scopes with:
+```bash
 npm exec apex -- -list
-npm exec apex -- -list <project>
+# Or for a specific project:
+npm exec apex -- -list <project_name>
 ```
 
-3) Developer can switch the scope by running the following
+---
+
+### 3. Switch Active Scope
+
+Change the current working scope:
+```bash
+npm exec apex -- <new_scope_name>
 ```
-npm exec apex -- new_scope
+
+---
+
+### 4. Configure Project Parameters
+
+Modify specific scope settings using:
+
+```bash
+npm exec apex-config -- <property> <value>
 ```
 
-4) Use `npm exec apex-config -- <property name> value` to change some configuration of the scope.
+Available configuration keys:
 
-configuration includes 
- > mount -> configuration that will be mounted to containers
+- `mount`: Folder mappings to be mounted into containers
+- `container`: Path where Dockerfiles are generated
+- `env`: Source file for environment variables (default is `.env` in project root)
 
- > container -> location where the dockerfile will be created
+---
 
- > env -> parameters that control the parameter generations. by default. it will be the .env file from the project root folder.
+### 5. Prepare Configuration Files
 
-5) Generate the APEX configurations
+Generate APEX configuration files:
 
+```bash
+npm exec apex-prepare -- [-pwd <password>]
 ```
-npm exec apex-prepare -- [-pwd password]
-```
-It generates the settings json, UI configuration page, and migrations settings. container built should mount the setting folder generated.
 
-The mount configuration should be as followed
-This will be preset when developer use npm exec apex-docker to create the docker compose file.
+This creates:
 
-```
+- Settings JSON files
+- Angular environment UI config
+- Migration settings
+
+If a password is provided, a PFX SSL certificate will also be generated for HTTPS use.
+
+#### Example Mount Configuration
+
+The following files will be treated as inputs of the generation
+
+
+> * ./**/`CSharp project root folder`/appsettings.template.json  
+> Configuration that are going to override ./appsettings.json
+> * ./.env  
+> Environments file that will be used to generate the configuration files
+
+
+
+The following is auto-configured if you use `apex-docker` to generate Docker:
+
+```json
 {
-    "CSharp": {
-        "Volume":{
-            "./mount/settings":"/app/deployment",
-            "./mount/Logs":"/app/Logs"
-        }
-    },
-    "Client":{
-        "Volume":{
-            "./mount/webapp/scripts":"/usr/share/nginx/html/assets/env",
-            "./mount/webapp/ssl":"/etc/nginx/ssl"
-        }
+  "CSharp": {
+    "Volume": {
+      "./mount/settings": "/app/deployment",
+      "./mount/Logs": "/app/Logs"
     }
+  },
+  "Client": {
+    "Volume": {
+      "./mount/webapp/scripts": "/usr/share/nginx/html/assets/env",
+      "./mount/webapp/ssl": "/etc/nginx/ssl"
+    }
+  }
 }
 ```
 
-If password is provided, the scripts will also generate the SSL in pfx format. The cert can be used as SSL for the https implementation.
+---
 
-6) Generate the DOcker build file / docker compose file
+### 6. Generate Docker Files
 
-Developer can use the function the generate the docker build file and docker compose file. The script will read the csharp project dependencies and generate the docker file. (For all web-based application only)
+Generate Dockerfiles and `docker-compose.yml` for your services:
 
+```bash
+npm exec apex-docker -- [-compose <compose_filename>]
 ```
-npm exec apex-docker -- (-compose comoose filename)
+
+- Automatically detects and generates Dockerfiles for C# web apps.
+- Prepares the `docker-compose` configuration with mounts and environment settings.
+
+You can then start your application with:
+
+```bash
+docker-compose up
 ```
 
-Developer can run docker compose to start up the application. 
+> 💡 Default settings are optimized for local development. You may override them via `.env`.
 
-The current configuration is for local docker container environment. Developer can change the .env file and overwrite it manually as well.
+---
 
+## 📝 Implementation Notes
 
+- Container builds now support:
+  1. Optional `appsettings` from `app/development`
+  2. Angular UI Docker env integration using generated settings
+  3. Database migration settings
+  4. OIDC app now supports insert **and** update
+  5. Protocol forwarding support for auth services
+  6. JWT certificate issuer validation
 
+---
+
+## 📫 Feedback & Contributions
+
+For issues or feature requests, please open a [GitHub issue](https://github.com/CLML-APEX/apex-cli/issues).
