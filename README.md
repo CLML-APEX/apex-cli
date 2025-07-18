@@ -2,6 +2,8 @@
 
 **Apex-CLI** is a Node.js-based command-line tool that helps manage configuration settings for application development and deployment workflows, especially for containerized environments.
 
+The Readme.md is valid for up to v2.0 and RunID 47
+
 ---
 
 ## 🚀 Requirements
@@ -39,9 +41,9 @@ npm install -g https://github.com/CLML-APEX/apex-cli/releases/download/main-Late
 
 ## ✅ Verify Installation
 
-After installation, run:
+After installation, run: 
 ```bash
-npm exec apex-help
+apex
 ```
 
 This will list all available CLI commands.
@@ -52,12 +54,12 @@ This will list all available CLI commands.
 
 | Command         | Description                                                   |
 |------------------|---------------------------------------------------------------|
-| `apex-help`       | Show all available commands                                   |
-| `apex-clean`      | Clean up all compiled code                                   |
-| `apex`            | Manage and switch project scopes                             |
-| `apex-config`     | Update configuration parameters                              |
-| `apex-prepare`    | Generate all necessary configuration and setting files       |
-| `apex-docker`     | Generate Dockerfile and `docker-compose.yml` for the project |
+| `apex`       | Show all available commands                                   |
+| `apex clean`      | Clean up all compiled code                                   |
+| `apex environ`            | Manage and switch project scopes                             |
+| `apex config`     | Update configuration parameters                              |
+| `apex prepare`    | Generate all necessary configuration and setting files       |
+| `apex docker`     | Generate Dockerfile and `docker-compose.yml` for the project |
 
 ---
 
@@ -68,7 +70,7 @@ This will list all available CLI commands.
 Define a new environment scope to manage the root of your solution:
 
 ```bash
-npm exec apex -- -folder <project_root_path> <project_name>
+apex -folder <project_root_path> <project_name>
 ```
 
 > ⚠️ This will **overwrite existing configuration** without confirmation.
@@ -79,18 +81,19 @@ npm exec apex -- -folder <project_root_path> <project_name>
 
 You can view existing scopes with:
 ```bash
-npm exec apex -- -list
+apex environ -list
 # Or for a specific project:
-npm exec apex -- -list <project_name>
+apex environ -list <project_name>
+# or to view the current project
+apex config
 ```
 
 ---
-
 ### 3. Switch Active Scope
 
-Change the current working scope:
+Change the current project:
 ```bash
-npm exec apex -- <new_scope_name>
+apex environ <new project name>
 ```
 
 ---
@@ -100,13 +103,14 @@ npm exec apex -- <new_scope_name>
 Modify specific scope settings using:
 
 ```bash
-npm exec apex-config -- <property> <value>
+apex config <property> <value>
 ```
 
 Available configuration keys:
 
 - `mount`: Folder mappings to be mounted into containers
 - `container`: Path where Dockerfiles are generated
+- `network`: Docker network name
 - `env`: Source file for environment variables (default is `.env` in project root)
 
 ---
@@ -116,7 +120,7 @@ Available configuration keys:
 Generate APEX configuration files:
 
 ```bash
-npm exec apex-prepare -- [-pwd <password>]
+apex prepare  [-pwd <password>]
 ```
 
 This creates:
@@ -127,19 +131,9 @@ This creates:
 
 If a password is provided, a PFX SSL certificate will also be generated for HTTPS use.
 
-#### Example Mount Configuration
+#### Example Docker build
 
-The following files will be treated as inputs of the generation
-
-
-> * ./**/`CSharp project root folder`/appsettings.template.json  
-> Configuration that are going to override ./appsettings.json
-> * ./.env  
-> Environments file that will be used to generate the configuration files
-
-
-
-The following is auto-configured if you use `apex-docker` to generate Docker:
+The following is auto-configured if you use `apex docker` to generate Docker:
 
 ```json
 {
@@ -165,19 +159,19 @@ The following is auto-configured if you use `apex-docker` to generate Docker:
 Generate Dockerfiles and `docker-compose.yml` for your services:
 
 ```bash
-npm exec apex-docker -- [-compose <compose_filename>]
+apex docker -- [-sys] [-util] [-image (image location)]
 ```
 
-- Automatically detects and generates Dockerfiles for C# web apps.
+- Automatically detects and generates Dockerfiles and docker compose files for C# web apps.
 - Prepares the `docker-compose` configuration with mounts and environment settings.
 
 You can then start your application with:
 
 ```bash
-docker-compose up
+docker compose -f <Mount folder> up -d
 ```
 
-> 💡 Default settings are optimized for local development. You may override them via `.env`.
+
 
 ---
 
