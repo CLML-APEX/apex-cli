@@ -1,0 +1,123 @@
+[
+  {
+    "image": "bitnami/redis:latest",
+    "name": "simtech-apex-redis",
+    "host": "${REDIS_HOST}",
+    "port": [],
+    "env": [
+      "REDIS_REPLICATION_MODE:master",
+      "ALLOW_EMPTY_PASSWORD:yes"
+    ],
+    "vol": [],
+    "platform": null,
+    "optional": false,
+    "command": null
+  },
+  {
+    "image": "postgis/postgis:16-3.5-alpine",
+    "name": "simtech-apex-postgis",
+    "host": "${POSTGRES_HOST}",
+    "port": [],
+    "env": [
+      "POSTGRES_USER:${POSTGRES_USER}",
+      "POSTGRES_PASSWORD:${POSTGRES_PASSWORD}",
+      "POSTGRES_DB:${POSTGRES_DB}"
+    ],
+    "vol": [
+      "simtech-apex-postgis-1:/var/lib/postgresql/data"
+    ],
+    "platform": null,
+    "optional": false,
+    "command": null
+  },
+  {
+    "image": "mongo:latest",
+    "name": "simtech-apex-mongodb",
+    "host": "${MONGO_HOST}",
+    "port": [],
+    "env": [
+      "MONGO_INITDB_ROOT_USERNAME: ${MONGO_USER}",
+      "MONGO_INITDB_ROOT_PASSWORD: ${MONGO_PWD}"
+    ],
+    "vol": [
+      "simtech-apex-mongodb-1:/data/db"
+    ],
+    "platform": null,
+    "optional": false,
+    "command": null
+  },
+  {
+    "image": "rabbitmq:3.11-management-alpine",
+    "name": "simtech-apex-rabbitmq",
+    "host": "${AMQP_HOST}",
+    "port": [
+      "${AMQP_ExPORT}:${AMQP_PORT}",
+      "${AMQP_ADMIN_ExPORT}:${AMQP_ADMIN_PORT}"
+    ],
+    "env": [],
+    "vol": [],
+    "platform": null,
+    "optional": false,
+    "command": null
+  },
+  {
+    "image": "dpage/pgadmin4",
+    "name": "simtech-apex-pgadmin",
+    "host": null,
+    "port": [
+      "8001:80"
+    ],
+    "env": [
+      "PGADMIN_DEFAULT_EMAIL:buzz@simtech.com",
+      "PGADMIN_DEFAULT_PASSWORD:p@ssw0rd"
+    ],
+    "vol": [
+      "PGADMIN:/var/lib/pgadmin"
+    ],
+    "platform": null,
+    "optional": true,
+    "command": null
+  },
+  {
+    "image": "mongo-express",
+    "name": "simtech-apex-mongo-express",
+    "host": null,
+    "port": [
+      "8002:8081"
+    ],
+    "env": [
+      "ME_CONFIG_BASICAUTH_USERNAME:admin",
+      "ME_CONFIG_BASICAUTH_PASSWORD:tribes",
+      "ME_CONFIG_MONGODB_URL:${MOBILE_DB}",
+      "ME_CONFIG_MONGODB_AUTH_DATABASE:admin"
+    ],
+    "vol": [],
+    "platform": null,
+    "optional": true,
+    "command": null
+  },
+  {
+    "image": "portainer/portainer-ce:latest",
+    "name": "simtech-apex-podtainer",
+    "host": null,
+    "port": [
+      "8004:8000",
+      "9443:9443"
+    ],
+    "env": [
+      "MONGO_INITDB_ROOT_USERNAME: ${MONGO_USER}",
+      "MONGO_INITDB_ROOT_PASSWORD: ${MONGO_PWD}"
+    ],
+    "vol": [
+      "/var/run/docker.sock:/var/run/docker.sock",
+      "/var/lib/docker/volumes:/var/lib/docker/volumes",
+      "/:/host",
+      "${SETTING_MOUNT}/secret:/tmp"
+    ],
+    "platform": null,
+    "optional": true,
+    "command": [
+      "--admin-password-file=/tmp/password.txt"
+    ]
+  }
+]
