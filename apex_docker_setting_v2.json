@@ -36,8 +36,8 @@
     "host": "${MONGO_HOST}",
     "port": [],
     "env": [
-      "MONGO_INITDB_ROOT_USERNAME: ${MONGO_USER}",
-      "MONGO_INITDB_ROOT_PASSWORD: ${MONGO_PWD}"
+      "MONGO_INITDB_ROOT_USERNAME:${MONGO_USER}",
+      "MONGO_INITDB_ROOT_PASSWORD:${MONGO_PWD}"
     ],
     "vol": [
       "simtech-apex-mongodb-1:/data/db"
