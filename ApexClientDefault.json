@@ -1,0 +1,24 @@
+[
+  {
+    "client": "SimTech.Apex_App",
+    "grant_type": [
+      "authorization_code",
+      "refresh_token",
+      "password"
+    ]
+  },
+  {
+    "client": "External_Integration",
+    "secret": "3a165ec4-6a3f-a19e-657c-0739e26cb85e",
+    "grant_type": [
+      "password"
+    ],
+    "scope": [
+      "IdentityService",
+      "AdministrationService",
+      "PartnerService",
+      "TransportService",
+      "DeliveryService"
+    ]
+  }
+]
