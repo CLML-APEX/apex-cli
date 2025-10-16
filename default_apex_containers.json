@@ -26,6 +26,9 @@
     "vol": [
       "simtech-apex-postgis-1:/var/lib/postgresql/data"
     ],
+    "files":[
+      "docker-entrypoint-initdb.d"
+    ],
     "platform": null,
     "optional": false,
     "command": null
