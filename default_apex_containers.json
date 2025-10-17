@@ -115,7 +115,7 @@
       "/var/run/docker.sock:/var/run/docker.sock",
       "PODTAINER:/var/lib/docker/volumes",
       "/:/host",
-      "${SETTING_MOUNT}/secret:/tmp"
+      "${_MOUNT}/secret:/tmp"
     ],
     "platform": null,
     "optional": true,
